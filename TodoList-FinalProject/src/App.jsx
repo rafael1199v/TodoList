@@ -1,17 +1,10 @@
-import { useState } from 'react'
-import SignIn from './components/SignIn'
-import Layout from './pages/Layout'
+import { router } from './router'
+import { RouterProvider } from 'react-router-dom'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <Layout>
-        <SignIn />
-      </Layout>
-      
-    </>
+    <RouterProvider router={router} />
   )
 }
 
