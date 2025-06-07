@@ -1,5 +1,5 @@
 import React from 'react'
-import todoIcon from '../../public/todo.svg'
+import todoIcon from '../assets/todo.svg'
 import { Link } from 'react-router-dom'
 
 function SignIn() {
