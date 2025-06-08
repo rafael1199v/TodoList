@@ -12,7 +12,7 @@ function Home() {
   return (
     <div>
       Home
-      <h2>Bienvenido { auth.session.user.email} </h2>
+      <h2>Bienvenido { auth.session.user.email } </h2>
       <button onClick={() => {
         AuthService.SignOut();
         navigate("/signin");

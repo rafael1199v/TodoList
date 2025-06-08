@@ -3,6 +3,7 @@ import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
+import PrivateRoute from "./components/PrivateRoute";
 
 
 export const router = createBrowserRouter([
@@ -11,16 +12,21 @@ export const router = createBrowserRouter([
         element: <SignIn />
     },
     {
-        path: 'signup',
+        path: '/signup',
         element: <SignUp />
     },
     {
-        path: '/',
-        element: <Layout />,
+        element: <PrivateRoute redirectTo='/signin'/>,
         children: [
             {
-                index: true,
-                element: <Home />
+                path: '/',
+                element: <Layout />,
+                children: [
+                    {
+                      index: true,
+                      element: <Home />  
+                    }
+                ]
             }
         ]
     }
