@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import todoIcon from '../assets/todo.svg'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import SignUpService from '../services/SignUpService';
 import Alert from './Alert';
 import ValidationForm from '../services/validation/ValidationForm';
 import SignUpFormValidator from '../services/validation/strategies/SignUpFormValidator';
+import { useAuthContext } from '../context/AuthContext';
 
 function SignUp() {
-
+  const auth = useAuthContext();
+  const navigate = useNavigate();
   const [message, setMessage] = useState(null);
   const [errors, setErrors] = useState(null);
   const [user, setUser] = useState({
@@ -37,12 +39,17 @@ function SignUp() {
     }
     
     try {
-      await SignUpService.signUp(user);
+      const data = await SignUpService.signUp(user);
       setMessage({
         title: "Operación existosa",
         message: "Se ha creado correctamente la cuenta",
         type: "success"
       });
+
+      setTimeout(() => {
+        auth.setSession(data.session);
+        navigate("/");
+      }, 3000);
     }
     catch(error) {
       setMessage({
