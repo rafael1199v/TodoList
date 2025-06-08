@@ -15,7 +15,6 @@ class SignUpService {
 
         if(error) {
             console.error(error.message);
-
             let additionalInformation = "";
 
             if(error.message === "User already registered")
@@ -23,7 +22,8 @@ class SignUpService {
 
             throw new Error(`Hubo un error al registrar al usuario. ${additionalInformation}`);
         }
-        
+
+        return data;
     }
 }
 
