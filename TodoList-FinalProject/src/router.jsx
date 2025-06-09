@@ -4,6 +4,7 @@ import SignUp from "./components/SignUp";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import PrivateRoute from "./components/PrivateRoute";
+import Categories from "./pages/Categories";
 
 
 export const router = createBrowserRouter([
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
                     {
                       index: true,
                       element: <Home />  
+                    },
+                    {
+                        path: '/categories',
+                        element: <Categories />
                     }
                 ]
             }
