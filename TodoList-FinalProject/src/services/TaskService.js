@@ -107,6 +107,19 @@ class TaskService {
 
     }
 
+    async manageTask(id, state) {
+
+        const { error } = await this.client
+            .from('tasks')
+            .update( { state: !state} )
+            .eq('id', id);
+
+         if(error){
+            console.error(error);
+            throw new Error("Hubo un error al cambiar el estado de la tarea. Intentalo de nuevo");
+        }
+    }
+
     parseForm(taskForm) {
         const parsedForm = {...taskForm};
 
