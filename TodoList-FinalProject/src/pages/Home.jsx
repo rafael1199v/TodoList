@@ -6,22 +6,43 @@ import TrashIcon from '../components/Icons/TrashIcon';
 import { useFetchTasks } from '../hooks/useFetchTasks';
 import taskService from '../services/TaskService';
 import { useAlert } from '../context/AlertContext';
+import { useState } from 'react';
 
 function Home() {
   const navigate = useNavigate();
-  const { tasks, getTasks } = useFetchTasks();
+  const { tasks, getTasks, setTasks } = useFetchTasks();
   const { showAlert } = useAlert();
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const deleteTask = async (id) => {
     try {
       await taskService.deleteTask(id);
+      showAlert("Operacion exitosa.", "Tarea eliminada correctamente","success");
       return true;
     }
     catch(error) {
       showAlert("Operacion fallida.", error.message,"danger");
       return false;
     }
-  } 
+  }
+
+  const manageTask = async (id, state) => {
+    if(isUpdating)
+      return;
+
+    try {
+      setIsUpdating(true);
+      await taskService.manageTask(id, state);
+      const newTasks = tasks.map(task => task.id === id ? {...task, state: !state} : task)
+      setTasks(newTasks);
+    }
+    catch(error) {
+      showAlert("Operacion fallida. Recarga la pagina", error.message,"danger");
+    }
+    finally {
+      setIsUpdating(false);
+    }
+  }
 
   return (
     <div className="p-6">
@@ -47,8 +68,10 @@ function Home() {
                 <div className="flex items-start gap-3 flex-grow">
                   <input
                     type="checkbox"
-                    value={task.state}
-                    className="mt-1.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                    checked={task.state}
+                    className="mt-1.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 disabled:opacity-70"
+                    disabled={isUpdating}
+                    onChange={() => manageTask(task.id, task.state)}
                   />
                   <div className={task.state ? 'opacity-75' : ''}>
                     <h3 className={`font-semibold text-lg text-gray-800 ${task.state ? 'line-through' : ''}`}>

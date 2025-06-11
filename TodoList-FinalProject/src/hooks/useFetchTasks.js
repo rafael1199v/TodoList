@@ -16,5 +16,5 @@ export const useFetchTasks = () => {
     }, []);
 
 
-    return { tasks, getTasks };
+    return { tasks, getTasks, setTasks };
 }
