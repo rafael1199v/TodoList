@@ -1,15 +1,27 @@
 import Button from '../components/Button';
 import Alert from '../components/Alert';
-import { useAuthContext } from '../context/AuthContext'
 import { useNavigate } from "react-router-dom"
 import PencilSquare from '../components/Icons/PencilSquare';
 import TrashIcon from '../components/Icons/TrashIcon';
 import { useFetchTasks } from '../hooks/useFetchTasks';
-
+import taskService from '../services/TaskService';
+import { useAlert } from '../context/AlertContext';
 
 function Home() {
   const navigate = useNavigate();
   const { tasks, getTasks } = useFetchTasks();
+  const { showAlert } = useAlert();
+
+  const deleteTask = async (id) => {
+    try {
+      await taskService.deleteTask(id);
+      return true;
+    }
+    catch(error) {
+      showAlert("Operacion fallida.", error.message,"danger");
+      return false;
+    }
+  } 
 
   return (
     <div className="p-6">
@@ -60,13 +72,17 @@ function Home() {
                   </span>
 
                   <button 
-                    className="text-blue-600 hover:text-blue-800 transition-colors"
+                    className="text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
                     onClick={() => navigate(`/tasks/edit/${task.id}`)}
                   >
                     <PencilSquare className="w-5 h-5" />
                   </button>
                   <button 
-                    className="text-red-600 hover:text-red-800 transition-colors"
+                    className="text-red-600 hover:text-red-800 transition-colors cursor-pointer"
+                    onClick={async () => {
+                      await deleteTask(task.id);
+                      await getTasks();
+                    }}
                   >
                     <TrashIcon className="w-5 h-5" />
                   </button>
