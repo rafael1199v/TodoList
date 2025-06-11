@@ -35,6 +35,10 @@ export const router = createBrowserRouter([
                     {
                         path: '/tasks/create',
                         element: <TaskForm />
+                    },
+                    {
+                        path: '/tasks/edit/:id',
+                        element: <TaskForm />
                     }
                 ]
             }

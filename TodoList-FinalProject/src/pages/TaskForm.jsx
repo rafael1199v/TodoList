@@ -23,6 +23,7 @@ function TaskForm() {
   });
   const [onSubmitting, setOnSubmitting] = useState(false);
   const { categories } = useFetchCategories();
+  const [isEditing, setIsEditing] = useState(false);
   
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -35,21 +36,23 @@ function TaskForm() {
 
     try {
       setOnSubmitting(true);
-      await taskService.postTask(task);
-      showAlert("Operacion exitosa", "Tarea creada correctamente. Revisa a lista de tareas!!!", "success");
+      (isEditing ? await taskService.updateTask(task, id) : await taskService.postTask(task));
 
-      setTask({
-        title: "",
-        description: "",
-        end_date: "",
-        categoryId: "",
-        userId: auth.session.user.id,
-      });
+      showAlert("Operacion exitosa", `Tarea ${isEditing ? "modificada" : "creada"} correctamente. Revisa a lista de tareas!!!`, "success");
 
+      if(!isEditing) {
+         setTask({
+          title: "",
+          description: "",
+          end_date: "",
+          categoryId: "",
+          userId: auth.session.user.id,
+        });
+      }
     }
     catch(error){
       console.log(error.message);
-      showAlert("Operacion fallida", "La tarea no pudo ser creada correctamente", "danger");
+      showAlert("Operacion fallida", `La tarea no pudo ser ${isEditing ? "modificada" : "creada"} correctamente`, "danger");
     }
     finally{
       setOnSubmitting(false);
@@ -59,8 +62,24 @@ function TaskForm() {
     
   }
 
-  useEffect(() => {
+  const getTask = async () => {
+    const editTask = await taskService.getTask(id);
+    
+    setTask({
+      title: editTask.title,
+      description: editTask.description,
+      end_date: editTask.end_date,
+      categoryId: editTask.categoryId,
+      userId: auth.session.user.id,
+    });
+  }
 
+  useEffect(() => {
+    if(!id) 
+      return;
+
+    setIsEditing(true);
+    getTask();
   }, []);
 
   const validate = () => {
@@ -75,7 +94,7 @@ function TaskForm() {
 
   return (
     <div className="w-full h-screen flex flex-col gap-5 justify-center items-center">
-      <h1 className="text-3xl">Crear tarea</h1>
+      <h1 className="text-3xl">{ isEditing ? "Editar tarea" : "Crear tarea" }</h1>
 
       <form className="w-[30%]" onSubmit={onSubmit}>
         <div className="mb-5">
@@ -111,7 +130,7 @@ function TaskForm() {
             type={"text"}
             name={"description"}
             placeholder={"Descripcion de la tarea"}
-            maxlength={30}
+            maxlength={50}
             onChange={(e) =>
               setTask((prevTask) => ({
                 ...prevTask,
@@ -165,7 +184,7 @@ function TaskForm() {
           type="submit"
           disabled={onSubmitting}
         >
-          Crear Categoria
+          { isEditing ? "Editar categoria" : "Crear categoria"}
         </button>
       </form>
     </div>
