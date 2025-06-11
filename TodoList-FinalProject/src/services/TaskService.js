@@ -50,7 +50,13 @@ class TaskService {
     }
 
     async deleteTask(id) {
-        
+        const response = await this.client
+            .from('tasks')
+            .delete()
+            .eq('id', id);
+
+        if(response.status != 204)
+            throw new Error("Hubo un fallo al momento de eliminar la tarea");
     }
 
 
