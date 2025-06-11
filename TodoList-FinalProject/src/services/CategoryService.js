@@ -55,6 +55,17 @@ class CategoryService {
     }
 
 
+    async deleteCategory(id) {
+        const response = await this.client
+            .from('categories')
+            .delete()
+            .eq('id', id);
+
+        if(response.status != 204)
+            throw new Error("Hubo un fallo al momento de eliminar la categoria");
+    }
+
+
     async existCategory(categoryName, uuid) {
         let data = await this.getCategories(uuid);
 

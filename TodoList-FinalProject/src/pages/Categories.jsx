@@ -5,25 +5,21 @@ import Alert from '../components/Alert';
 import { useFetchCategories } from '../hooks/useFetchCategories';
 import UpdateCategoryModal from '../components/UpdateCategoryModal';
 import { useUpdateCategoryModal } from '../hooks/useUpdateCategoryModal';
+import { useDeleteCategory } from '../hooks/useDeleteCategory';
+import TrashIcon from '../components/Icons/TrashIcon';
+import PencilSquare from '../components/Icons/PencilSquare';
 
 function Categories() {
   const { categoryName, onChange, createCategory, errorMessage } = useCategoryForm();
   const { categories, getCategories, loading } = useFetchCategories();
   const { isOpenUpdateModal, openUpdateModal, closeUpdateModal, selectedCategory, setSelectedCategory, updateCategory, updateError } = useUpdateCategoryModal();
+  const { deleteCategory } = useDeleteCategory();
 
   if(loading) {
     return <p>Cargando...</p>
   }
-
   return (
     <div className='mt-10'>
-
-      { errorMessage && (
-        <div className='fixed bottom-4 left-1/2 transform -translate-x-1/3'>
-          <Alert title={"Hubo un error al crear la categoria"} message={errorMessage} type={"danger"}/>
-        </div>
-      )}
-
       <div className='text-3xl text-center mb-5'>Categorias</div>
 
       <div className='flex flex-row justify-center gap-3'>
@@ -55,12 +51,21 @@ function Categories() {
       { categories.map((category) => (
         <div className='flex flex-row justify-between mt-5 border-b border-b-amber-600' key={category.id}>
           <p>{ category.name} </p>
-          <div>
-            <a onClick={() => {
+          <div className='flex flex-row gap-3'>
+            <div className='cursor-pointer' onClick={() => {
               setSelectedCategory(category);
               openUpdateModal();
-            }}>Editar</a> {' '}
-            <a>Eliminar</a>
+            }}>
+              <PencilSquare />
+            </div>
+
+            <div className='cursor-pointer'  onClick={async() => {
+              await deleteCategory(category.id);
+              await getCategories();
+            }}>
+               <TrashIcon />
+            </div>
+           
           </div>
         </div>
       ))}
