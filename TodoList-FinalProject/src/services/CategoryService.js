@@ -11,7 +11,7 @@ class CategoryService {
             .from('categories')
             .select(`
                 id,
-                name,
+                name
             `)
             .eq('user_id', uuid);
 
@@ -23,6 +23,10 @@ class CategoryService {
 
 
     async postCategory(categoryName, uuid) {
+        
+        if(await this.existCategory(categoryName, uuid))
+            throw new Error("La categoria ya existe");
+
         const { data, error } = await this.client
             .from('categories')
             .insert({
@@ -34,6 +38,32 @@ class CategoryService {
             throw new Error(error.message);
 
         return data;
+    }
+
+    async updateCategory(newCategoryName, id, uuid) {
+
+        if(await this.existCategory(newCategoryName, uuid))
+            throw new Error("La categoria ya existe");
+
+        const { data, error } = await this.client
+            .from('categories')
+            .update({ name: newCategoryName})
+            .eq('id', id);
+
+        if(error)
+            throw new Error(error.message);
+    }
+
+
+    async existCategory(categoryName, uuid) {
+        let data = await this.getCategories(uuid);
+
+        for(let category of data){
+            if(category.name.toLowerCase().trim() === categoryName.toLowerCase().trim())
+                return true;
+        }
+        
+        return false;
     }
 
 }

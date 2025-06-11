@@ -29,8 +29,7 @@ export const useCategoryForm = () => {
 
         try {
             await categoryService.postCategory(categoryName, auth.session.user.id);
-            setCategoryName("")
-            console.log('todo ok');
+            setCategoryName("");
         }
         catch(error) {
             console.error(error.message);

@@ -1,11 +1,19 @@
-import { useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import { useCategoryForm } from '../hooks/useCategoryForm';
 import Alert from '../components/Alert';
+import { useFetchCategories } from '../hooks/useFetchCategories';
+import UpdateCategoryModal from '../components/UpdateCategoryModal';
+import { useUpdateCategoryModal } from '../hooks/useUpdateCategoryModal';
 
 function Categories() {
   const { categoryName, onChange, createCategory, errorMessage } = useCategoryForm();
+  const { categories, getCategories, loading } = useFetchCategories();
+  const { isOpenUpdateModal, openUpdateModal, closeUpdateModal, selectedCategory, setSelectedCategory, updateCategory, updateError } = useUpdateCategoryModal();
+
+  if(loading) {
+    return <p>Cargando...</p>
+  }
 
   return (
     <div className='mt-10'>
@@ -30,7 +38,10 @@ function Categories() {
 
         <Button 
           name={'Crear'}
-          onClick={createCategory}
+          onClick={async () => {
+            await createCategory();
+            await getCategories();
+          }}
           disabled={categoryName === ""}
         />
       </div>
@@ -39,6 +50,36 @@ function Categories() {
         <h3 className='font-bold'>Nombre de la categoria</h3>
         <h3 className='font-bold'>Accion</h3>
       </div>
+
+      
+      { categories.map((category) => (
+        <div className='flex flex-row justify-between mt-5 border-b border-b-amber-600' key={category.id}>
+          <p>{ category.name} </p>
+          <div>
+            <a onClick={() => {
+              setSelectedCategory(category);
+              openUpdateModal();
+            }}>Editar</a> {' '}
+            <a>Eliminar</a>
+          </div>
+        </div>
+      ))}
+      
+      { categories.length === 0 && (
+        <Alert title={"No tienes categorias creadas"} message={"Intenta crear una nueva."} type={"info"}/>
+      )}
+
+      { isOpenUpdateModal && (
+        <UpdateCategoryModal 
+          onClose={closeUpdateModal}
+          updateCategoryName={selectedCategory.name} 
+          updateCategory={updateCategory} 
+          updateError={updateError}
+          getCategories={getCategories}
+        />
+      )}
+      
+      
     </div>
   );
 }
