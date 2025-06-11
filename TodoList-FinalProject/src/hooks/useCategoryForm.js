@@ -1,14 +1,14 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import categoryService from "../services/CategoryService";
 import { useAuthContext } from "../context/AuthContext";
+import { useAlert } from "../context/AlertContext";
 import SingleInputTextValidator from "../services/validation/strategies/SingleInputTextValidator";
 import ValidationForm from "../services/validation/ValidationForm"
 
 export const useCategoryForm = () => {
     const [categoryName, setCategoryName] = useState("");
-    const [errorMessage, setErrorMessage] = useState(null);
-
     const auth = useAuthContext();
+    const { showAlert } = useAlert();
 
     const onChange = (e) => {
         setCategoryName(e.target.value);
@@ -18,7 +18,10 @@ export const useCategoryForm = () => {
         const validator = new ValidationForm(new SingleInputTextValidator());
         const errors = validator.validate(categoryName);
         const existError = Object.keys(errors).length !== 0;
-        setErrorMessage((existError ? errors.text : null));
+        
+        if (existError) {
+            showAlert("Error de validación", errors.text);
+        }
 
         return !existError;
     }
@@ -33,15 +36,11 @@ export const useCategoryForm = () => {
         }
         catch(error) {
             console.error(error.message);
-            setErrorMessage(error.message);
-
-            setTimeout(() => {
-                setErrorMessage(null);
-            }, 3000);
+            showAlert("Error al crear categoría", error.message);
         }
                 
     }
 
-    return { categoryName, onChange, createCategory, errorMessage }
+    return { categoryName, onChange, createCategory }
 }
 
