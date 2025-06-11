@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import PrivateRoute from "./components/PrivateRoute";
 import Categories from "./pages/Categories";
+import TaskForm from "./pages/TaskForm";
 
 
 export const router = createBrowserRouter([
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
                     {
                         path: '/categories',
                         element: <Categories />
+                    },
+                    {
+                        path: '/tasks/create',
+                        element: <TaskForm />
                     }
                 ]
             }
