@@ -14,7 +14,9 @@ class SignUpFormValidator {
         else if(signUpForm.password.length < 6)
             errors.password = "La contraseña debe contar con al menos seis caracteres";
 
-        if(signUpForm.password !== signUpForm.confirmPassword)
+        if(!signUpForm.confirmPassword.trim())
+            errors.confirmPassword = "La confirmacion de contraseña es requerida";
+        else if(signUpForm.password !== signUpForm.confirmPassword)
             errors.confirmPassword = "Las contraseñas no coinciden";
 
 
