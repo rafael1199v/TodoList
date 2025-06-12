@@ -403,7 +403,55 @@ Entonces el sistema actualizará la apariencia de la tarjeta y guardará la info
 
 ![Esquema de base de datos](./assets/img/database-schema.png)
 
-## Diseño de interfaces de usuario por pagina
+## Diseño de interfaces de usuario por página
+
+### Layout
+![Layout](./assets/img/layout.png)
+
+### Inicio de sesión
+
+![Inicio de sesion](./assets/img/login.png)
+
+### Registro
+
+![Registro](./assets/img/registro.png)
+
+### Categorias
+
+**Crear categorias**  
+![Crear categoria](./assets/img/crear-categoria.png)
+
+**Obtener categorias**  
+![Obtener categorias](./assets/img/obtener-categorias.png)
+
+**Obtener categorias vacio**  
+![Obtener categorias vacio](./assets/img/obtener-categorias-vacio.png)
+
+**Editar categorias**  
+![Editar categorias](./assets/img/editar-categoria.png)
+
+### Tareas
+
+**Formulario de creación de tareas**  
+![Crear tarea](./assets/img/crear-tarea.png)
+
+**Eliminar una tarea**
+![Eliminar tarea](./assets/img/eliminar-tarea.png)
+
+**Obtener tareas**  
+![Obtener tareas](./assets/img/obtener-tareas.png)
+
+**Tarjeta de tarea (completado / no completado)**  
+![Gestion de tarea](./assets/img/gestion-tarea.png)
+
+## Diagramas de flujo realizados
+
+**Inicio de sesión**  
+![Iniciar sesion](./assets/img/diagrama-sesion.png)
+
+**Registro de usuario**  
+![Registro](./assets/img/diagrama-registro.png)
+
 
 # Implementación
 
@@ -411,9 +459,149 @@ Entonces el sistema actualizará la apariencia de la tarjeta y guardará la info
 
 ## Tecnologías utilizadas
 
+- Supabase
+    - Autenticación
+    - PostgreSQL
+- React
+- Vitest
+- Tailwind
+
 ## Patrones de diseño aplicados
+
+### Patrón Singleton
+#### Porqué uso Singleton en mi proyecto?
+Uso el patrón Singleton en mi proyecto ya que la conexión a la base de datos es un factor de carga importante a la aplicación de gestión de tareas, ya que cada vez que se solicita el cliente la aplicación se detiene por unos segundos. Además que la conexión a la base de datos no cambia con respecto al usuario que lo use. En conclusión, aplicar este patrón nos sirve para minimizar la carga y mejorar el rendimiento general de la aplicación.
+
+![Diagrama patrón Singleton](./assets/img/singleton.png)  
+Esta única instancia se va a utilizar tanto para la autenticación como para el acceso a la base de datos
+
+#### Codigo base
+
+```js
+import { createClient } from "@supabase/supabase-js"
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+class SupabaseClient {
+
+    static #instance = null;
+
+    constructor() {
+        if(!SupabaseClient.#instance){
+            SupabaseClient.#instance = createClient(supabaseUrl, supabaseAnonKey);
+        }
+        
+        return SupabaseClient.#instance;
+    }
+
+}
+
+
+export default SupabaseClient;
+```
+
+Esta clase nos asegura tener una única instancia en toda la aplicación. Donde se requiera usar el cliente, se puede usar el operador `new` normalmente y la implementación interna devolverá siempre el mismo. Esta implementación tambien asegura no instanciar el objeto si no se requiere que es denominado como `Lazy Singleton`.
+
+
+### Patrón Strategy
+El patrón Strategy nos permite definir de manera abstracta el manera en como se va a validar un formulario, permitiendonos cambiar esta estrategia en cualquier momento si lo necesitamos y así no tener que cambiar o modificar lineas de código existente, ya que todo se va a manejar mediante la clase abstracta ValidationForm.
+
+![Diagrama patrón Strategy](./assets/img/strategy.png)
+> A pesar de que JavaScript no es un lenguaje orientado a objetos, el patrón Strategy sirve para mejorar el entendimiento del código y el mantenimiento futuro, ya que si por alguna razón tenemos que cambiar de estrategia o modificar la actual, no tendremos que cambiar las lineas en donde se usa esta strategia, debido a que estaremos usando el método validate de la clase contexto que es ValidateForm.
+
+#### Código base
+
+
+**Clase contexto**
+```js
+class ValidationForm {
+
+    #strategy = null;
+
+    constructor(strategy = null) {
+        this.#strategy = strategy;        
+    }
+
+    validate(form) {
+        if(!this.#strategy)
+            throw new Error("No se ha definido una estrategia");
+
+        return this.#strategy.validate(form);
+    }
+
+    setStrategy(newStrategy) {
+        this.#strategy = newStrategy;
+    }
+
+}
+
+export default ValidationForm;
+```
+
+**Clase estrategia**
+```js
+class SignInFormValidator {
+
+    validate(signInForm) {
+        const errors = {};
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if(!signInForm.email.trim())
+            errors.email = "El correo es requerido";
+        else if(!emailRegex.test(signInForm.email))
+            errors.email = "El correo es invalido";
+
+        if(!signInForm.password.trim())
+            errors.password = "La contraseña es requerida";
+
+        return errors;
+    } 
+}
+
+
+export default SignInFormValidator;
+```
+
+**Ejemplo de uso**
+```js
+const validate = () => {
+    const validator = new ValidationForm(new SignInFormValidator());
+    const formErrors = validator.validate(user);
+
+    const existErrors = Object.keys(formErrors).length !== 0;
+    setErrors((existErrors ? formErrors : null));
+
+    return !existErrors;
+}
+```
+
+Con este ejemplo, si quisieramos cambiar la estrategia de validación del formulario del inicio de sesión, debemos solamente crear otra clase que cumpla las reglas de la clase contexto `ValidationForm` y modificar la estrategia de inicio. Así logramos mejorar la mantenibilidad de código a largo plazo y desacoplar las validaciones específicas de cada formulario.
 
 ## Estructura del proyecto
 
+
+```
+TodoList-FinalProject/
+|       
+├── src/                  # Código fuente
+│   ├── assets/           # Recursos estáticos
+│   ├── components/       # Componentes React reutilizables
+│   ├── context/          # Contextos de React
+│   ├── hooks/            # Custom hooks
+│   ├── pages/            # Páginas/Rutas principales
+│   ├── services/         # Servicios, lógica de negocio, patrones de diseño
+│   └── tests/            # Pruebas unitarias
+├── .env.example          # Ejemplo de variables de entorno
+├── index.html            # Punto de entrada HTML
+├── package.json          # Dependencias y scripts
+└── vite.config.js        # Configuración de Vite con las pruebas unitarias y TailwindCSS
+```
+
 # Lecciones aprendidas
 
+En estas dos semanas que tuve para realizar el proyecto he comprendido y mejorado en muchos aspectos que me ayudará a crecer como profesional.
+
+* Investigación: He aprendido a solventar problemas debido a la falta de conocimiento con una tecnología, donde he podido investigar y aplicar lo aprendido para concluir con el proyecto.
+* Organización: Con otros exámenes finales en curso, he podido organizar mejor mi tiempo para las diferentes responsabilidades de cada materia sin dejar de lado a otras.
+* Documentación: Entender al usuario es una de las tareas mas dificiles en el desarrollo de software y la documentación nos ayuda a formar un método de comunicación entre los desarrolladores e interesados. Además que se deja por escrito todas las acciones y responsabilidades que tiene el desarrollador al momento de la elaboración del proyecto.

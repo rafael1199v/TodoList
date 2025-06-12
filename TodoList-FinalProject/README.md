@@ -1,12 +1,38 @@
-# React + Vite
+# TodoList - Guía de Implementación
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto es un gestor de tareas construido con React y Supabase. A continuación se detallan los pasos para estructurar y ejecutar el proyecto.
 
-Currently, two official plugins are available:
+## Requisitos Previos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (versión 18 o superior)
+- npm (gestor de paquetes de Node.js)
 
-## Expanding the ESLint configuration
+## Configuración del Proyecto
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Clonar el Repositorio**
+   ```powershell
+   git clone <url-del-repositorio>
+   cd TodoList-FinalProject
+   ```
+
+2. **Configuración de Variables de Entorno**
+   - Crear un archivo `.env` en la raíz del proyecto basado en `.env.example` con el comando ```cp .env.example .env```
+   - Colocar las credenciales de supabase en el archivo `.env`
+
+
+3. **Instalar Dependencias**
+   ```powershell
+   npm install
+   ```
+
+## Ejecución del Proyecto
+
+1. **Iniciar el Servidor de Desarrollo**
+   ```powershell
+   npm run dev
+   ```
+
+2. **Ejecutar Pruebas**
+   ```powershell
+   npm run test
+   ```
