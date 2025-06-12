@@ -303,6 +303,8 @@ Entonces el sistema actualizará la lista de categorías.
 Cuando le de click al botón de eliminar y ocurra un error  
 Entonces el sistema mostrará un mensaje de error al usuario.  
 
+---
+
 ### Crear tarea
 
 Como usuario
