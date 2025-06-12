@@ -1,6 +1,14 @@
 # TodoList
 Gestor de tareas hecho en React para la interfaz de usuario, y Supabase para la base de datos y la autenticacion
 
+# Indice
+
+1. [Introducción](#introducción)
+2. [Analisis de requisitos](#analisis-de-requisitos)
+3. [Diseño del sistema](#diseño-del-sistema)
+4. [Implementación](#implementación)
+5. [Lecciones aprendidas](#lecciones-aprendidas)
+
 # Introducción
 
 ## Problematica
