@@ -128,4 +128,4 @@ describe('Verificacion de existencia de una categoria', () => {
         //Assert
         expect(exist).toBe(true);
     });
-})
+});
