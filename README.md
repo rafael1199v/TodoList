@@ -10,11 +10,17 @@ En la actualidad, muchas personas estan constantemente realizando una gran canti
 El sistema **TodoList** se encarga de la gestión de tareas, creación y vinculación de categorías con las tareas para cada usuario, haciendo la aplicación más personalizable y dinámica.
 
 ## Objetivo General
-Implementar una aplicación web para solventar los problemas de organización personal que conlleva la gestión y organización de responsabilidades
+Implementar una aplicación web que facilite la gestión de responsabilidades mediante una organización por categorias
 
 ## Objetivos especfícos
+* Implementar una interfaz web intuitiva.
+* Integrar un sistema de autenticación para personalizar la aplicación a cada usuario.
+* Desarrollar un sistema de gestión de categorías para que puedan ser vinculadas con las tareas
+* Implementar un sistema de gestión de tareas atractiva y sencilla para el usuario.
 
 ## Alcance
+El proyecto se enfocará en la gestión de tareas y categorías personales. Y se incluirá funcionalidades de autenticación, registro de usuarios, donde la información será almacenada sistema de terceros.
+El sistema no incluirá funcionalidades de notificaciones, autorización de recursos ni integración o desarrollo de sistemas de gestión de tiempo.
 
 # Analisis de requisitos
 
