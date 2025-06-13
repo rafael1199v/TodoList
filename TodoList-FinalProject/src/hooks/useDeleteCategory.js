@@ -7,7 +7,7 @@ export const useDeleteCategory = () => {
     const deleteCategory = async (id) => {
         try {
             await categoryService.deleteCategory(id);
-            showAlert("Operacion exitosa", "Categoria elimina correctamente", "success");
+            showAlert("Operacion exitosa", "Categoria eliminada correctamente", "success");
 
             return true;
         }
